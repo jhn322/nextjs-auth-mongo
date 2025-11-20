@@ -1,0 +1,256 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// * ---------------------------------
+// *            USERS
+// * ---------------------------------
+
+// ** User model ** //
+model User {
+  id            String     @id @default(cuid()) @map("_id")
+  name          String?
+  email         String     @unique
+  password      String?    // Make password optional for OAuth users
+  image         String?    // Profile image URL
+  emailVerified DateTime?  // Required for NextAuth
+  role          UserRole   @default(USER)
+  accounts      Account[]  // Required for NextAuth
+  sessions      Session[]  // Required for NextAuth
+  contacts      Contact[]
+  contactInteractions ContactInteraction[] // Added relation for interactions
+  subscription  Subscription? // User has one subscription (or none)
+  passwordResetTokens PasswordResetToken[] // Relation to PasswordResetToken model
+  emailVerificationTokens EmailVerificationToken[] // Relation to EmailVerificationToken model
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+// ** NextAuth required models ** //
+model Account {
+  id                String  @id @default(cuid()) @map("_id")
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+// ** Session model ** //
+model Session {
+  id           String   @id @default(cuid()) @map("_id")
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ** VerificationToken model ** //
+model VerificationToken {
+  id         String   @id @default(cuid()) @map("_id")
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ** EmailVerificationToken model ** //
+model EmailVerificationToken {
+  id        String   @id @default(cuid()) @map("_id")
+  userId    String
+  token     String   @unique // Store a hash of the actual token
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ** PasswordResetToken model ** //
+model PasswordResetToken {
+  id        String   @id @default(cuid()) @map("_id")
+  userId    String
+  token     String   @unique // Store a hash of the actual token
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ** UserRole enum ** //
+enum UserRole {
+  USER
+  ADMIN
+}
+
+// ** Subscription model ** //
+model Subscription {
+  id                 String    @id @default(cuid()) @map("_id")
+  userId             String    @unique // Each user has a unique subscription
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  plan               SubscriptionPlanType @default(FREE)
+  status             SubscriptionStatus @default(ACTIVE)
+
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  cancelAtPeriodEnd  Boolean   @default(false)
+  canceledAt         DateTime?
+  trialStart         DateTime?
+  trialEnd           DateTime?
+
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+// ** SubscriptionPlanType enum ** //
+enum SubscriptionPlanType {
+  FREE
+  PRO
+}
+
+// ** SubscriptionStatus enum ** //
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  INCOMPLETE
+  TRIALING
+}
+
+
+// * ---------------------------------
+// *            CONTACTS
+// * ---------------------------------
+
+// ** Contact model ** //
+model Contact {
+  id            String     @id @default(cuid()) @map("_id")
+  userId        String  // Owner(user) of the contact
+  firstName     String
+  lastName      String
+  email         String
+  phone         String?
+  type          ContactType   @default(CONTACT)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  note          String?    
+  noteUpdatedAt DateTime?
+  isEmailVerified      Boolean   @default(false)
+  emailVerificationToken String?
+  emailVerificationTokenExpires DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+
+  contactConsents ContactConsentEvent[] // Relation to consent events
+  addresses       Address[]             // Relation to addresses
+  interactions    ContactInteraction[]  // Added relation for interactions
+
+  @@unique([userId, email]) // Only one contact per user per email
+}
+
+// ** ContactType enum ** //
+enum ContactType {
+  CONTACT   // Someone you want to keep in your database
+  LEAD      // Someone who might buy
+  CUSTOMER  // Someone who has bought
+  AMBASSADOR // Someone who promotes/sells for you
+}
+
+// ** ContactConsentEvent model ** //
+model ContactConsentEvent {
+  id          String   @id @default(cuid()) @map("_id")
+  contactId   String
+  contact     Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  consentType ConsentType
+  granted     Boolean  // True if consent was given, false if revoked or denied at this point
+  timestamp   DateTime @default(now()) // When this specific consent event occurred
+  proof       String?  // e.g., "Form: Signup v1.2, IP: 123.45.67.89"
+  legalNotice String?  // e.g., "Privacy Policy v1.1", "Terms of Service v2.0"
+
+  @@index([contactId, consentType, timestamp]) // Index for querying consent history
+}
+
+// ** ConsentType enum ** //
+enum ConsentType {
+  STORAGE
+  MARKETING
+  PARTNERS
+}
+
+// ** AddressType enum ** //
+enum AddressType {
+  HOME
+  WORK
+  SHIPPING
+  BILLING
+  OTHER
+}
+
+// ** Address model ** //
+model Address {
+  id        String  @id @default(cuid()) @map("_id")
+  contactId String
+  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  type            AddressType? // Type of address (e.g., HOME, WORK)
+  street          String       // Street address
+  street2         String?      // Additional street line (e.g., apt number, c/o)
+  postalCode      String       // Postal code
+  city            String       // City
+  stateOrProvince String?      // State or province (optional depending on country)
+  country         String       // Country
+
+  isPrimary       Boolean @default(false) // Is this the primary address for the contact?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([contactId]) // Index for faster querying of a contact's addresses
+}
+
+// ** CONTACT INTERACTIONS
+model ContactInteraction {
+  id        String   @id @default(cuid()) @map("_id")
+  userId    String
+  contactId String
+  lastViewedAt DateTime @updatedAt // Automatically updates on each upsert to this record
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contactId]) // Ensures one interaction record per user-contact pair
+  @@index([userId])
+  @@index([contactId])
+}
+
+
+
+
