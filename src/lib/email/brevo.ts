@@ -34,7 +34,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
                 <!-- Header -->
                 <tr>
                   <td align="center" style="padding: 40px 20px 20px 20px; border-bottom: 1px solid #374151;">
-                    <h1 style="color: #6904B7; margin: 0; font-size: 28px;">${APP_NAME}</h1>
+                    <h1 style="color: #2667ff; margin: 0; font-size: 28px;">${APP_NAME}</h1>
                   </td>
                 </tr>
                 <!-- Content -->
@@ -43,7 +43,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
                     <h2 style="color: #D1D5DB; margin-top: 0; margin-bottom: 20px; font-size: 22px;">Reset Your Password</h2>
                     <p style="margin-bottom: 20px;">You requested a password reset for your account with ${APP_NAME}.</p>
                     <p style="margin-bottom: 30px;">Please click the button below to set a new password:</p>
-                    <a href="${resetLink}" target="_blank" rel="noopener noreferrer" style="background-color: #6904B7; color: #FFFFFF; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Reset My Password</a>
+                    <a href="${resetLink}" target="_blank" rel="noopener noreferrer" style="background-color: #2667ff; color: #FFFFFF; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Reset My Password</a>
                     <p style="margin-top: 30px; margin-bottom: 10px;">This link is valid for a limited time (e.g., 1 hour).</p>
                     <p style="margin-bottom: 0;">If you did not request a password reset, please ignore this email.</p>
                   </td>
@@ -144,7 +144,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
                 <!-- Header -->
                 <tr>
                   <td align="center" style="padding: 40px 20px 20px 20px; border-bottom: 1px solid #374151;">
-                    <h1 style="color: #6904B7; margin: 0; font-size: 28px;">${APP_NAME}</h1>
+                    <h1 style="color: #2667ff; margin: 0; font-size: 28px;">${APP_NAME}</h1>
                   </td>
                 </tr>
                 <!-- Content -->
@@ -153,7 +153,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
                     <h2 style="color: #D1D5DB; margin-top: 0; margin-bottom: 20px; font-size: 22px;">Verify Your Email Address</h2>
                     <p style="margin-bottom: 20px;">Thank you for registering with ${APP_NAME}!</p>
                     <p style="margin-bottom: 30px;">Please click the button below to verify your email address:</p>
-                    <a href="${verificationUrl}" target="_blank" rel="noopener noreferrer" style="background-color: #6904B7; color: #FFFFFF; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Verify My Email</a>
+                    <a href="${verificationUrl}" target="_blank" rel="noopener noreferrer" style="background-color: #2667ff; color: #FFFFFF; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Verify My Email</a>
                     <p style="margin-top: 30px; margin-bottom: 10px;">This link is valid for 24 hours.</p>
                     <p style="margin-bottom: 0;">If you did not register, please ignore this email.</p>
                   </td>

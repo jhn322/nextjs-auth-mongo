@@ -71,17 +71,29 @@ export const configureCallbacks = () => ({
   async jwt({
     token,
     user,
+    trigger,
+    session,
   }: {
     token: JWT;
     user?: User;
     _account?: Account | null;
+    trigger?: 'signIn' | 'signUp' | 'update';
+    session?: any;
   }) {
+    if (trigger === 'update' && session?.name) {
+      token.name = session.name;
+    }
+
     if (user) {
       // Add the user's role to the JWT payload
       // Fetch the user from the database and add their role
       const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
       if (dbUser) {
         token.role = dbUser.role;
+        // Also ensure name is up to date from DB if not just updated
+        if (trigger !== 'update') {
+           token.name = dbUser.name;
+        }
       } else {
         // Fallback to default role if user is not found in the database
         token.role = USER_ROLES.USER;

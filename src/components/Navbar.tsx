@@ -15,7 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   ChevronDown,
   HelpCircle,
@@ -145,6 +145,10 @@ export function Navbar() {
                       <div className="flex items-center justify-between">
                         <div className="flex min-w-0 items-center gap-3">
                           <Avatar className="h-9 w-9 shrink-0">
+                            <AvatarImage
+                              src={session?.user?.image || undefined}
+                              alt={session?.user?.name || 'User'}
+                            />
                             <AvatarFallback className="bg-primary text-primary-foreground text-sm font-medium">
                               {session?.user?.email?.charAt(0).toUpperCase() ||
                                 'U'}
@@ -265,10 +269,15 @@ export function Navbar() {
                         </DropdownMenuItem>
                       </Link>
                     )}
-                    <DropdownMenuItem disabled className="cursor-not-allowed">
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span>Settings</span>
-                    </DropdownMenuItem>
+                    <Link
+                      href={PROTECTED_PATHS.SETTINGS_BASE}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Settings</span>
+                      </DropdownMenuItem>
+                    </Link>
                     <DropdownMenuItem disabled className="cursor-not-allowed">
                       <HelpCircle className="mr-2 h-4 w-4" />
                       <span>FAQ</span>
