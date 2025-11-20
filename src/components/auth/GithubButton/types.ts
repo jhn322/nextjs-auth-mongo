@@ -4,4 +4,3 @@ export interface GithubButtonProps {
   onError?: (error: Error) => void;
   isLoading?: boolean;
 }
-

@@ -1,13 +1,19 @@
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { AUTH_MESSAGES, DEFAULT_LOGIN_REDIRECT } from '@/lib/auth/constants/auth';
+import {
+  AUTH_MESSAGES,
+  DEFAULT_LOGIN_REDIRECT,
+} from '@/lib/auth/constants/auth';
 
 interface UseGithubAuthProps {
   onSuccess?: () => void;
   onError?: (error: Error) => void;
 }
 
-export const useGithubAuth = ({ onSuccess, onError }: UseGithubAuthProps = {}) => {
+export const useGithubAuth = ({
+  onSuccess,
+  onError,
+}: UseGithubAuthProps = {}) => {
   const [loading, setLoading] = useState(false);
 
   const handleGithubSignIn = async () => {
@@ -19,7 +25,9 @@ export const useGithubAuth = ({ onSuccess, onError }: UseGithubAuthProps = {}) =
       });
 
       if (result?.error) {
-        onError?.(new Error(result.error || AUTH_MESSAGES.ERROR_GITHUB_SIGNIN_FAILED));
+        onError?.(
+          new Error(result.error || AUTH_MESSAGES.ERROR_GITHUB_SIGNIN_FAILED)
+        );
       } else if (result?.ok) {
         onSuccess?.();
       }
@@ -39,4 +47,3 @@ export const useGithubAuth = ({ onSuccess, onError }: UseGithubAuthProps = {}) =
     handleGithubSignIn,
   };
 };
-
