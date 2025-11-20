@@ -215,26 +215,26 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to see the a
 
 ### Required Variables
 
-| Variable               | Description                                            | Example                                              |
-| ---------------------- | ------------------------------------------------------ | ---------------------------------------------------- |
-| `DATABASE_URL`         | MongoDB connection string                              | `mongodb+srv://user:pass@cluster.mongodb.net/dbname` |
-| `NEXTAUTH_URL`         | Base URL of your application (production)              | `https://yourdomain.com`                             |
-| `NEXTAUTH_SECRET`      | Secret key for NextAuth (generate securely)            | `base64-encoded-random-string`                       |
-| `NEXT_PUBLIC_APP_URL`  | Public URL of your application                         | `https://yourdomain.com`                             |
-| `GOOGLE_CLIENT_ID`     | Google OAuth Client ID                                 | `123456789-abc.apps.googleusercontent.com`           |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth Client Secret                             | `GOCSPX-xxxxxxxxxxxxx`                               |
-| `GITHUB_CLIENT_ID`     | GitHub OAuth Client ID                                 | `Iv1.xxxxxxxxxxxxx`                                  |
-| `GITHUB_CLIENT_SECRET` | GitHub OAuth Client Secret                             | `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`                   |
-| `BREVO_API_KEY`        | Brevo API key for sending emails                       | `xkeysib-xxxxxxxxxxxxx`                              |
-| `EMAIL_FROM_NAME`      | Name displayed in email sender                         | `My App`                                             |
-| `EMAIL_FROM_ADDRESS`   | Email address to send from (must be verified in Brevo) | `noreply@yourdomain.com`                             |
+| Variable               | Description                                            | Example                                                                 |
+| ---------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------|
+| `DATABASE_URL`         | MongoDB connection string                              | `mongodb+srv://<username>:<password>@cluster.mongodb.net/dbname`        |
+| `NEXTAUTH_URL`         | Base URL of your application (production)              | `https://yourdomain.com`                                                |
+| `NEXTAUTH_SECRET`      | Secret key for NextAuth (generate securely)            | `base64-encoded-random-string`                                          |
+| `NEXT_PUBLIC_APP_URL`  | Public URL of your application                         | `https://yourdomain.com`                                                |
+| `GOOGLE_CLIENT_ID`     | Google OAuth Client ID                                 | `123456789-abc.apps.googleusercontent.com`                              |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth Client Secret                             | `GOCSPX-xxxxxxxxxxxxx`                                                  |
+| `GITHUB_CLIENT_ID`     | GitHub OAuth Client ID                                 | `Iv1.xxxxxxxxxxxxx`                                                     |
+| `GITHUB_CLIENT_SECRET` | GitHub OAuth Client Secret                             | `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`                                      |
+| `BREVO_API_KEY`        | Brevo API key for sending emails                       | `xkeysib-xxxxxxxxxxxxx`                                                 |
+| `EMAIL_FROM_NAME`      | Name displayed in email sender                         | `My App`                                                                |
+| `EMAIL_FROM_ADDRESS`   | Email address to send from (must be verified in Brevo) | `noreply@yourdomain.com`                                                |
 
 ### Development vs Production
 
 #### Development (`.env.local`)
 
 ```bash
-DATABASE_URL="mongodb+srv://user:pass@cluster.mongodb.net/dbname"
+DATABASE_URL="mongodb+srv://<username>:<password>@cluster.mongodb.net/dbname"
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="your-generated-secret"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
@@ -333,8 +333,9 @@ nextjs-auth-mongo-template/
 
 1. Push your code to GitHub
 2. Import your repository in [Vercel](https://vercel.com)
-3. Add all environment variables in the Vercel dashboard
-4. Deploy
+3. Add "npx prisma generate && next build" under Build and Development
+4. Add all environment variables in the Vercel dashboard
+5. Deploy
 
 ### Other Platforms
 
@@ -350,14 +351,6 @@ Make sure to:
 - Set all required environment variables
 - Configure MongoDB network access for your server's IP
 - Update OAuth redirect URIs to your production domain
-
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
